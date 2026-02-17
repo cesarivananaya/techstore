@@ -1,0 +1,36 @@
+﻿­ƒöì Intentando conectar a PostgreSQL...
+Host: localhost
+Port: 5432
+Database: techstore
+User: postgres
+Password: ***sql
+node : ÔØî Error de 
+conexi├│n: la 
+autentificaci´┐¢n password 
+fall´┐¢ para el usuario 
+´┐¢postgres´┐¢
+En línea: 1 Carácter: 13
++ cd backend; node 
+test-connection.js 2>&1 | 
+Out-File -FilePath test-ou 
+...
++             
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (ÔØî Err  
+  or de co... ´┐¢postgres´   
+ ┐¢:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+
+­ƒÆí Posibles soluciones:
+   1. Verifica que 
+PostgreSQL est├® corriendo
+   2. Verifica la 
+contrase├▒a en backend\.env 
+(l├¡nea DB_PASSWORD)
+   3. Verifica que la base 
+de datos "techstore" exista 
+en pgAdmin
