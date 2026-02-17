@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiShoppingCart, FiArrowLeft, FiCheck, FiInfo } from 'react-icons/fi';
 import { useProduct } from '../hooks';
+import { useCartStore } from '../store'; // Moved to top-level imports
 import { formatPrice } from '../utils';
 import { Button, Badge, Spinner } from '../components/common';
 import { toast } from 'react-toastify';
@@ -9,8 +10,14 @@ import { toast } from 'react-toastify';
 export default function ProductDetail() {
     const { id } = useParams();
     const { data: product, isLoading, isError } = useProduct(id);
+    const addItem = useCartStore((s) => s.addItem); // Moved hook usage to top of component
+
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
+    const [imgError, setImgError] = useState(false); // Moved state to top of component
+
+    // Fallback SVG data URI - Moved definition before early returns
+    const fallbackImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%231f2937'/%3E%3Cpath d='M200 150c-27.6 0-50 22.4-50 50s22.4 50 50 50 50-22.4 50-50-22.4-50-50-50zm0 80c-16.5 0-30-13.5-30-30s13.5-30 30-30 30 13.5 30 30-13.5 30-30 30z' fill='%23374151'/%3E%3C/svg%3E";
 
     if (isLoading) {
         return (
@@ -32,14 +39,15 @@ export default function ProductDetail() {
         );
     }
 
+    // Removed the erroneous import statement from here
+
     const handleAddToCart = () => {
-        // TODO: Implementar lógica real con CartContext
-        toast.success(`Añadido ${quantity} x ${product.nombre} al carrito`);
+        addItem(product, quantity);
     };
 
     const images = product.imagenes && product.imagenes.length > 0
         ? product.imagenes
-        : [{ url: 'https://via.placeholder.com/600x600?text=No+Image', alt: 'No image' }];
+        : [{ url: fallbackImg, alt: 'No image' }];
 
     return (
         <div className="min-h-screen bg-gray-950 text-white py-12">
@@ -56,7 +64,8 @@ export default function ProductDetail() {
                     <div className="space-y-4">
                         <div className="aspect-square bg-white/[0.02] border border-white/5 rounded-3xl overflow-hidden relative group">
                             <img
-                                src={images[selectedImage].url}
+                                src={imgError ? fallbackImg : images[selectedImage].url} // Updated src to use imgError
+                                onError={() => setImgError(true)} // Added onError handler
                                 alt={images[selectedImage].alt}
                                 className="w-full h-full object-contain p-8 transition-transform duration-500 group-hover:scale-105"
                             />
@@ -74,8 +83,7 @@ export default function ProductDetail() {
                                     <button
                                         key={idx}
                                         onClick={() => setSelectedImage(idx)}
-                                        className={`w-20 h-20 rounded-xl border flex-shrink-0 overflow-hidden transition-all ${selectedImage === idx ? 'border-violet-500 ring-2 ring-violet-500/20' : 'border-white/10 hover:border-white/30'
-                                            }`}
+                                        className={`w-20 h-20 rounded-xl border flex-shrink-0 overflow-hidden transition-all ${selectedImage === idx ? 'border-violet-500 ring-2 ring-violet-500/20' : 'border-white/10 hover:border-white/30'}`}
                                     >
                                         <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
                                     </button>

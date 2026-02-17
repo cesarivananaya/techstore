@@ -7,10 +7,10 @@ import { CartSidebar } from '../cart/CartSidebar';
 import { Badge } from '../common';
 
 export function Header() {
-  const [menuOpen, setMenuOpen]   = useState(false);
-  const [search,   setSearch]     = useState('');
-  const navigate  = useNavigate();
-  const { user, logout }          = useAuthStore();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
   const { itemCount, toggleCart } = useCartStore();
 
   const handleSearch = (e) => {
@@ -60,6 +60,11 @@ export function Header() {
             <div className="ml-auto flex items-center gap-2">
               {user ? (
                 <div className="hidden md:flex items-center gap-2">
+                  {user.role === 'admin' && (
+                    <Link to="/admin" className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-yellow-500 hover:text-yellow-400 hover:bg-white/5 transition-all font-semibold" title="Panel de Administración">
+                      <FiPackage size={18} />
+                    </Link>
+                  )}
                   <Link to="/profile" className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-all">
                     <FiUser size={18} />
                     <span>{user.nombre.split(' ')[0]}</span>
@@ -130,13 +135,16 @@ export function Header() {
             ))}
             {user ? (
               <>
+                {user.role === 'admin' && (
+                  <Link to="/admin" onClick={() => setMenuOpen(false)} className="text-sm text-yellow-400 hover:text-yellow-300 py-1 font-semibold">Admin Panel</Link>
+                )}
                 <Link to="/profile" onClick={() => setMenuOpen(false)} className="text-sm text-gray-300 hover:text-white py-1">Mi Perfil</Link>
-                <Link to="/orders"  onClick={() => setMenuOpen(false)} className="text-sm text-gray-300 hover:text-white py-1">Mis Pedidos</Link>
+                <Link to="/orders" onClick={() => setMenuOpen(false)} className="text-sm text-gray-300 hover:text-white py-1">Mis Pedidos</Link>
                 <button onClick={() => { logout(); setMenuOpen(false); }} className="text-sm text-red-400 text-left py-1">Cerrar Sesión</button>
               </>
             ) : (
               <>
-                <Link to="/login"    onClick={() => setMenuOpen(false)} className="text-sm text-gray-300 hover:text-white py-1">Iniciar Sesión</Link>
+                <Link to="/login" onClick={() => setMenuOpen(false)} className="text-sm text-gray-300 hover:text-white py-1">Iniciar Sesión</Link>
                 <Link to="/register" onClick={() => setMenuOpen(false)} className="text-sm text-violet-400 hover:text-violet-300 py-1">Crear Cuenta</Link>
               </>
             )}

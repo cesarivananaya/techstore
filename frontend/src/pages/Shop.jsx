@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useProducts } from '../hooks';
 import { ProductGrid } from '../components/product';
@@ -15,6 +15,18 @@ export default function Shop() {
         page: 1,
     });
 
+    // Sincronizar filtros con URL params
+    useLayoutEffect(() => {
+        setFilters(f => ({
+            ...f,
+            search: searchParams.get('search') || '',
+            categoria: searchParams.get('categoria') || '',
+            precioMin: searchParams.get('precioMin') || '',
+            precioMax: searchParams.get('precioMax') || '',
+            page: 1
+        }));
+    }, [searchParams]);
+
     const [sortOrd, sortDir] = filters.sort.split(':');
     const { data, isLoading } = useProducts({
         search: filters.search,
@@ -27,14 +39,32 @@ export default function Shop() {
         limit: 12,
     });
 
-    const setFilter = (key, val) => setFilters((f) => ({ ...f, [key]: val, page: 1 }));
+    const setFilter = (key, val) => {
+        const newParams = new URLSearchParams(searchParams);
+        if (val) {
+            newParams.set(key, val);
+        } else {
+            newParams.delete(key);
+        }
+        newParams.set('page', '1'); // Reset page on filter change
+        setSearchParams(newParams);
+    };
 
     return (
         <div className="min-h-screen bg-gray-950 text-white py-10">
             <div className="max-w-7xl mx-auto px-4">
                 <div className="mb-8">
-                    <h1 className="text-4xl font-black">Todos los Productos</h1>
-                    {data && <p className="text-gray-500 mt-1">{data.meta?.total} productos encontrados</p>}
+                    <h1 className="text-4xl font-black mb-2">
+                        {filters.categoria
+                            ? CATEGORIAS.find(c => c.id === filters.categoria)?.label || 'Productos'
+                            : 'Todos los Productos'}
+                    </h1>
+                    {data && (
+                        <p className="text-gray-400">
+                            Mostrando {data.data?.length || 0} de {data.meta?.total} resultados
+                            {filters.search && ` para "${filters.search}"`}
+                        </p>
+                    )}
                 </div>
 
                 {/* Controles */}
@@ -61,7 +91,11 @@ export default function Shop() {
                     {/* Ordenar */}
                     <select
                         value={filters.sort}
-                        onChange={(e) => setFilter('sort', e.target.value)}
+                        onChange={(e) => {
+                            const newParams = new URLSearchParams(searchParams);
+                            newParams.set('sort', e.target.value);
+                            setSearchParams(newParams);
+                        }}
                         className="bg-gray-800 border border-white/10 rounded-xl px-4 py-2 text-sm text-white outline-none focus:border-violet-500"
                     >
                         {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -76,7 +110,11 @@ export default function Shop() {
                         {Array.from({ length: data.meta.totalPages }, (_, i) => i + 1).map((p) => (
                             <button
                                 key={p}
-                                onClick={() => setFilters((f) => ({ ...f, page: p }))}
+                                onClick={() => {
+                                    const newParams = new URLSearchParams(searchParams);
+                                    newParams.set('page', p.toString());
+                                    setSearchParams(newParams);
+                                }}
                                 className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all ${filters.page === p ? 'bg-violet-600 text-white' : 'bg-white/5 text-gray-400 hover:text-white'}`}
                             >
                                 {p}

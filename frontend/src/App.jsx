@@ -10,14 +10,13 @@ import { Spinner } from './components/common';
 import { useAuthStore } from './store';
 
 // Lazy-load pages
-// Lazy-load pages
 const Home = lazy(() => import('./pages/Home'));
 const Shop = lazy(() => import('./pages/Shop'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const Profile = lazy(() => import('./pages/Profile'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
-
+const Admin = lazy(() => import('./pages/Admin'));
 
 // ─── Query Client ─────────────────────────────────────────────────────────────
 const queryClient = new QueryClient({
@@ -100,7 +99,7 @@ export default function App() {
             <Route path="/checkout" element={<RequireAuth><Layout><PageLoader /></Layout></RequireAuth>} />
 
             {/* Admin */}
-            <Route path="/admin/*" element={<RequireAdmin><Layout><PageLoader /></Layout></RequireAdmin>} />
+            <Route path="/admin/*" element={<RequireAdmin><Layout><Admin /></Layout></RequireAdmin>} />
 
             {/* 404 */}
             <Route path="*" element={

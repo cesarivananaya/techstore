@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiStar, FiShoppingCart, FiHeart, FiEye } from 'react-icons/fi';
 import { motion } from 'framer-motion';
@@ -11,6 +12,12 @@ export function ProductCard({ product }) {
   const discount = calcDiscount(product.precioAnterior, product.precio);
   const img = product.imagenes?.[0]?.url;
 
+  const [imgSrc, setImgSrc] = React.useState(img || '/assets/placeholder-product.svg');
+  const [imgError, setImgError] = React.useState(false);
+
+  // Fallback SVG data URI
+  const fallbackImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%231f2937'/%3E%3Cpath d='M200 150c-27.6 0-50 22.4-50 50s22.4 50 50 50 50-22.4 50-50-22.4-50-50-50zm0 80c-16.5 0-30-13.5-30-30s13.5-30 30-30 30 13.5 30 30-13.5 30-30 30z' fill='%23374151'/%3E%3C/svg%3E";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -21,16 +28,17 @@ export function ProductCard({ product }) {
       {/* Imagen */}
       <div className="relative overflow-hidden aspect-square bg-gray-800">
         <img
-          src={img || 'https://via.placeholder.com/400x400?text=Sin+imagen'}
+          src={imgError ? fallbackImg : imgSrc}
           alt={product.nombre}
+          onError={() => setImgError(true)}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-          {product.nuevo      && <Badge color="green">Nuevo</Badge>}
-          {discount > 0       && <Badge color="red">-{discount}%</Badge>}
-          {product.destacado  && <Badge color="violet">Destacado</Badge>}
+          {product.nuevo && <Badge color="green">Nuevo</Badge>}
+          {discount > 0 && <Badge color="red">-{discount}%</Badge>}
+          {product.destacado && <Badge color="violet">Destacado</Badge>}
         </div>
 
         {/* Overlay de acciones */}
@@ -119,9 +127,14 @@ export function ProductGrid({ products = [], loading = false }) {
 
   if (!products.length) {
     return (
-      <div className="text-center py-20 text-gray-500">
-        <FiShoppingCart className="w-16 h-16 mx-auto mb-4 opacity-30" />
-        <p className="text-lg font-medium">No se encontraron productos</p>
+      <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+        <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center">
+          <FiShoppingCart className="w-8 h-8 text-gray-500" />
+        </div>
+        <h3 className="text-xl font-semibold text-white">No se encontraron productos</h3>
+        <p className="text-gray-400 max-w-sm">
+          Intenta ajustar los filtros de búsqueda o explora otras categorías.
+        </p>
       </div>
     );
   }
