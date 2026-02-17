@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiShoppingCart, FiArrowLeft, FiCheck, FiInfo } from 'react-icons/fi';
 import { useProduct } from '../hooks';
@@ -15,6 +15,11 @@ export default function ProductDetail() {
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [imgError, setImgError] = useState(false); // Moved state to top of component
+
+    // Reset error when changing image
+    useEffect(() => {
+        setImgError(false);
+    }, [selectedImage]);
 
     // Fallback SVG data URI - Moved definition before early returns
     const fallbackImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%231f2937'/%3E%3Cpath d='M200 150c-27.6 0-50 22.4-50 50s22.4 50 50 50 50-22.4 50-50-22.4-50-50-50zm0 80c-16.5 0-30-13.5-30-30s13.5-30 30-30 30 13.5 30 30-13.5 30-30 30z' fill='%23374151'/%3E%3C/svg%3E";
@@ -85,7 +90,12 @@ export default function ProductDetail() {
                                         onClick={() => setSelectedImage(idx)}
                                         className={`w-20 h-20 rounded-xl border flex-shrink-0 overflow-hidden transition-all ${selectedImage === idx ? 'border-violet-500 ring-2 ring-violet-500/20' : 'border-white/10 hover:border-white/30'}`}
                                     >
-                                        <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
+                                        <img
+                                            src={img.url}
+                                            alt={img.alt}
+                                            onError={(e) => { e.target.src = fallbackImg }}
+                                            className="w-full h-full object-cover"
+                                        />
                                     </button>
                                 ))}
                             </div>

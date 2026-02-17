@@ -55,10 +55,12 @@ export const Input = forwardRef(({ label, error, className = '', ...props }, ref
 Input.displayName = 'Input';
 
 // ─── Select ───────────────────────────────────────────────────────────────────
-export const Select = ({ label, error, children, className = '', ...props }) => (
+// ─── Select ───────────────────────────────────────────────────────────────────
+export const Select = forwardRef(({ label, error, children, className = '', ...props }, ref) => (
   <div className="flex flex-col gap-1.5">
     {label && <label className="text-sm font-medium text-gray-300">{label}</label>}
     <select
+      ref={ref}
       className={clsx(
         'w-full bg-gray-800 border rounded-xl px-4 py-2.5 text-white outline-none transition-all',
         error ? 'border-red-500' : 'border-white/10 focus:border-violet-500',
@@ -70,7 +72,9 @@ export const Select = ({ label, error, children, className = '', ...props }) => 
     </select>
     {error && <p className="text-xs text-red-400">{error}</p>}
   </div>
-);
+));
+
+Select.displayName = 'Select';
 
 // ─── Badge ────────────────────────────────────────────────────────────────────
 export const Badge = ({ children, color = 'gray', className = '' }) => {

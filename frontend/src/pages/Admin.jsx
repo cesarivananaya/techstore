@@ -28,9 +28,13 @@ export default function Admin() {
     });
 
     const onSubmit = (data) => {
+        // Generar SKU automático único
+        const sku = `${data.marca.slice(0, 3).toUpperCase()}-${data.categoria.slice(0, 3).toUpperCase()}-${Date.now().toString().slice(-6)}`;
+
         // Formatear datos para el backend
         const payload = {
             ...data,
+            sku,
             precio: Number(data.precio),
             stock: Number(data.stock),
             imagenes: images.map((url, i) => ({ url, esPrincipal: i === 0, alt: data.nombre })),
@@ -99,6 +103,7 @@ export default function Admin() {
                                 />
                                 <Button type="button" onClick={addImage} variant="secondary">Agregar</Button>
                             </div>
+                            <p className="text-xs text-gray-500">Pega el enlace directo a una imagen alojada en internet (imgur, cloudinary, etc.)</p>
 
                             {images.length > 0 && (
                                 <div className="flex gap-3 overflow-x-auto pb-2">

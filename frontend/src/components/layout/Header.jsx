@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiZap, FiSearch, FiShoppingCart, FiUser, FiHeart, FiMenu, FiX, FiLogOut, FiPackage } from 'react-icons/fi';
+import { FiZap, FiSearch, FiShoppingCart, FiUser, FiHeart, FiMenu, FiX, FiLogOut, FiPackage, FiGrid } from 'react-icons/fi';
 import { useAuthStore, useCartStore } from '../../store';
 import { formatPrice, CATEGORIAS } from '../../utils';
 import { CartSidebar } from '../cart/CartSidebar';
@@ -62,7 +62,7 @@ export function Header() {
                 <div className="hidden md:flex items-center gap-2">
                   {user.role === 'admin' && (
                     <Link to="/admin" className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-yellow-500 hover:text-yellow-400 hover:bg-white/5 transition-all font-semibold" title="Panel de Administración">
-                      <FiPackage size={18} />
+                      <FiGrid size={18} />
                     </Link>
                   )}
                   <Link to="/profile" className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-all">

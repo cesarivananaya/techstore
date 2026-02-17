@@ -12,6 +12,7 @@ import { useAuthStore } from './store';
 // Lazy-load pages
 const Home = lazy(() => import('./pages/Home'));
 const Shop = lazy(() => import('./pages/Shop'));
+const Orders = lazy(() => import('./pages/Orders')); // Added import
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const Profile = lazy(() => import('./pages/Profile'));
@@ -94,7 +95,7 @@ export default function App() {
 
             {/* Protegidas */}
             <Route path="/profile" element={<RequireAuth><Layout><Profile /></Layout></RequireAuth>} />
-            <Route path="/orders" element={<RequireAuth><Layout><PageLoader /></Layout></RequireAuth>} />
+            <Route path="/orders" element={<RequireAuth><Layout><Orders /></Layout></RequireAuth>} />
             <Route path="/orders/:id/confirmation" element={<RequireAuth><Layout><PageLoader /></Layout></RequireAuth>} />
             <Route path="/checkout" element={<RequireAuth><Layout><PageLoader /></Layout></RequireAuth>} />
 
