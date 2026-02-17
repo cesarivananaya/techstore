@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "TechStore - React + Node.js + PostgreSQL",
   "scripts": {
-    "backend":   "cd backend && npm run dev",
-    "frontend":  "cd frontend && npm start",
-    "dev":       "npx concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm start",
+    "dev": "npx concurrently \"npm run backend\" \"npm run frontend\"",
     "install:all": "cd backend && npm install && cd ../frontend && npm install",
-    "seed":      "cd backend && node src/seeders/seed.js"
+    "seed": "cd backend && node src/seeders/seed.js",
+    "db:export": "docker exec techstore_db pg_dump -U postgres techstore > database_sync.sql",
+    "db:import": "docker exec -i techstore_db psql -U postgres techstore < database_sync.sql"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
